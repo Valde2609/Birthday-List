@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1069390206609",
+    "project_id": "compose-valde",
+    "storage_bucket": "compose-valde.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069390206609:android:b38ae00b0124aaaa4cd130",
+        "android_client_info": {
+          "package_name": "com.example.birthdaylist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdByXD2rvBEQZdLXALLrTVxYh1bAmls9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
