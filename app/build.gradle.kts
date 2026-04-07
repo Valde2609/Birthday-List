@@ -58,4 +58,11 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation("androidx.navigation:navigation-compose:2.9.7")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0") // REST
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0") // JSON to obj conversion
+    implementation("io.insert-koin:koin-androidx-compose:4.1.1") // dependency injection
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8") // icons
 }
