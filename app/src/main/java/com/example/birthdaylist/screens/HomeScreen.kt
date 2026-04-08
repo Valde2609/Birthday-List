@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +33,8 @@ import com.example.birthdaylist.viewModel.FriendsViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: FriendsViewModel = viewModel(),
-    onLogoutClick: () -> Unit = {}
+    onLogoutClick: () -> Unit = {},
+    onAddFriendClick: () -> Unit = {}
 ) {
     val friends = viewModel.friends
 
@@ -40,6 +44,14 @@ fun HomeScreen(
                 title = "Home",
                 onLogoutClick = onLogoutClick
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddFriendClick) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Friend"
+                )
+            }
         }
     ) { innerPadding ->
         LazyColumn(
@@ -52,6 +64,7 @@ fun HomeScreen(
                 FriendList(
                     friend = friend,
                     onDeleteClick = { viewModel.deleteFriend(friend) }
+//                    onEditClick = { /* Handle edit click */ }
                 )
             }
         }
@@ -86,6 +99,12 @@ fun FriendList(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
+//            IconButton(onClick = onEditClick) {
+//                Icon(
+//                    imageVector = Icons.Default.Edit,
+//                    contentDescription = "Edit Friend"
+//                )
+//            }
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
