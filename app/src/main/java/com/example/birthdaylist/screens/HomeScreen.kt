@@ -34,7 +34,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: FriendsViewModel = viewModel(),
     onLogoutClick: () -> Unit = {},
-    onAddFriendClick: () -> Unit = {}
+    onAddFriendClick: () -> Unit = {},
+    onEditFriendClick: (Friend) -> Unit = {}
 ) {
     val friends = viewModel.friends
 
@@ -63,8 +64,8 @@ fun HomeScreen(
             items(friends) { friend ->
                 FriendList(
                     friend = friend,
-                    onDeleteClick = { viewModel.deleteFriend(friend) }
-//                    onEditClick = { /* Handle edit click */ }
+                    onDeleteClick = { viewModel.deleteFriend(friend) },
+                    onEditClick = { onEditFriendClick(friend) }
                 )
             }
         }
@@ -75,6 +76,7 @@ fun HomeScreen(
 fun FriendList(
     friend: Friend,
     onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -99,12 +101,12 @@ fun FriendList(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-//            IconButton(onClick = onEditClick) {
-//                Icon(
-//                    imageVector = Icons.Default.Edit,
-//                    contentDescription = "Edit Friend"
-//                )
-//            }
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Friend"
+                )
+            }
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
