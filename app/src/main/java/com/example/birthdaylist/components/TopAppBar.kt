@@ -15,12 +15,13 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BirthdayTopAppBar(
+    title: String = "",
     onLogoutClick: () -> Unit
 ) {
     TopAppBar(
         title = {
             Text(
-                text = "Home",
+                text = title,
                 style = MaterialTheme.typography.titleLarge
             )
         },

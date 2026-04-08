@@ -14,9 +14,9 @@ class FriendsViewModel : ViewModel() {
     init {
         _friends.addAll(
             listOf(
-                Friend(1,"Anna", "12.03.1998"),
-                Friend(2, "Peter", "08.07.1997"),
-                Friend(3, "Maria", "25.11.1999")
+                Friend(1,"Jesper", "25.06.1999"),
+                Friend(2, "Gustav", "26.07.1999"),
+                Friend(3, "Emil", "28.03.2000")
             )
         )
     }

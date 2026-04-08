@@ -16,3 +16,4 @@ data class Friend(
     val pictureUrl: String? = null,
     val age: Int? = null
 )
+
