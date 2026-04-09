@@ -2,11 +2,13 @@ package com.example.birthdaylist.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.Button
@@ -15,6 +17,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -123,22 +126,33 @@ fun AddFriendScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = {
-                    if (name.isNotBlank() && birthday.isNotBlank()) {
-                        viewModel.addFriend(
-                            Friend(
-                                id = Random.nextInt(),
-                                name = name,
-                                birthday = birthday
+            Row(modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = onNavigateBack,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Cancel")
+                }
+                
+                Spacer(modifier = Modifier.width(16.dp))
+                
+                Button(
+                    onClick = {
+                        if (name.isNotBlank() && birthday.isNotBlank()) {
+                            viewModel.addFriend(
+                                Friend(
+                                    id = Random.nextInt(),
+                                    name = name,
+                                    birthday = birthday
+                                )
                             )
-                        )
-                        onNavigateBack()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Add Friend")
+                            onNavigateBack()
+                        }
+                    },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Add Friend")
+                }
             }
         }
     }
