@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.birthdaylist.components.BirthdayTopAppBar
-import com.example.birthdaylist.viewModel.Friend
 import com.example.birthdaylist.viewModel.FriendsViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,7 +49,7 @@ fun EditFriendScreen(
     var name by remember { mutableStateOf("") }
     var birthday by remember { mutableStateOf("") }
     var showDatePicker by remember { mutableStateOf(false) }
-    
+
     val datePickerState = rememberDatePickerState()
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -143,9 +142,9 @@ fun EditFriendScreen(
                 ) {
                     Text("Cancel")
                 }
-                
+
                 Spacer(modifier = Modifier.width(16.dp))
-                
+
                 Button(
                     onClick = {
                         if (name.isNotBlank() && birthday.isNotBlank() && existingFriend != null) {
@@ -158,7 +157,7 @@ fun EditFriendScreen(
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Update Friend")
+                    Text("Update")
                 }
             }
         }
