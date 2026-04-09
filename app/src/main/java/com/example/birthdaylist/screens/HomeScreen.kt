@@ -97,6 +97,10 @@ fun FriendList(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
+                    text = "Age: ${friend.age}",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
                     text = "Birthday: ${friend.birthday}",
                     style = MaterialTheme.typography.bodyMedium
                 )
