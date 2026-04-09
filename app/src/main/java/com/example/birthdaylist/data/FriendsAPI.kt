@@ -13,11 +13,11 @@ interface FriendsAPI {
     suspend fun getFriends(): Response<List<Friend>>
 
     @POST("persons")
-    suspend fun addFriends(@Body friend: Friend): Response<Friend>
+    suspend fun addFriend(@Body friend: Friend): Response<Friend>
 
-    @DELETE("persons/{Id}")
-    suspend fun deleteBook(@Path("friendId") friendId: Int): Response<Friend>
+    @DELETE("persons/{friendId}")
+    suspend fun deleteFriend(@Path("friendId") friendId: Int): Response<Friend>
 
-    @PUT("persons/{Id}")
-    suspend fun updateBook(@Path("friendId") friendId: Int, @Body friend: Friend): Response<Friend>
+    @PUT("persons/{friendId}")
+    suspend fun updateFriend(@Path("friendId") friendId: Int, @Body friend: Friend): Response<Friend>
 }
