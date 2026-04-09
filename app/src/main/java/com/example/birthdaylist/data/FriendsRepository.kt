@@ -1,8 +1,8 @@
 package com.example.birthdaylist.data
 
-//interface BooksRepository {
-//    suspend fun getBooks(): NetworkResult<List<Book>>
-//    suspend fun addBook(book: Book): NetworkResult<Book>
-//    suspend fun deleteBook(bookId: Int): NetworkResult<Book>
-//    suspend fun updateBook(bookId: Int, data: Book): NetworkResult<Book>
-//}
+interface FriendsRepository {
+    suspend fun getFriends(): NetworkResult<List<Friend>>
+    suspend fun addFriend(friend: Friend): NetworkResult<Friend>
+    suspend fun deleteFriend(friendId: Int): NetworkResult<Friend>
+    suspend fun updateFriend(friendId: Int, friend: Friend): NetworkResult<Friend>
+}
