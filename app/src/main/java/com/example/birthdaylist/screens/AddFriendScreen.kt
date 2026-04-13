@@ -30,21 +30,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 import com.example.birthdaylist.components.BirthdayTopAppBar
-import com.example.birthdaylist.viewModel.Friend
-import com.example.birthdaylist.viewModel.FriendsViewModel
+import com.example.birthdaylist.data.Friend
+import com.example.birthdaylist.viewModel.AuthenticationViewModel
+import com.example.birthdaylist.viewModel.FriendViewModel
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFriendScreen(
     onLogoutClick: () -> Unit = {},
     onNavigateBack: () -> Unit = {},
-    viewModel: FriendsViewModel = viewModel()
+    viewModel: FriendViewModel = koinViewModel(),
+    authViewModel: AuthenticationViewModel = koinViewModel()
 ) {
     var name by remember { mutableStateOf("") }
     var birthday by remember { mutableStateOf("") }
@@ -52,6 +54,7 @@ fun AddFriendScreen(
     
     val datePickerState = rememberDatePickerState()
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val userId = authViewModel.user?.uid
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -139,14 +142,21 @@ fun AddFriendScreen(
                 Button(
                     onClick = {
                         if (name.isNotBlank() && birthday.isNotBlank()) {
-                            viewModel.addFriend(
-                                Friend(
-                                    id = Random.nextInt(),
-                                    name = name,
-                                    birthday = birthday
+                            val date = formatter.parse(birthday)
+                            val cal = Calendar.getInstance()
+                            if (date != null) {
+                                cal.time = date
+                                viewModel.addFriend(
+                                    Friend(
+                                        name = name,
+                                        birthDayOfMonth = cal.get(Calendar.DAY_OF_MONTH),
+                                        birthMonth = cal.get(Calendar.MONTH) + 1,
+                                        birthYear = cal.get(Calendar.YEAR)
+                                    ),
+                                    userId = userId
                                 )
-                            )
-                            onNavigateBack()
+                                onNavigateBack()
+                            }
                         }
                     },
                     modifier = Modifier.weight(1f)
