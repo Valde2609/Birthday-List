@@ -11,6 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 enum class SortType {
     NAME, AGE, BIRTHDAY
@@ -149,5 +152,15 @@ class FriendViewModel(
 
     fun sortByName(ascending: Boolean) {
         sortFriends(SortType.NAME, ascending)
+    }
+
+    fun calculateAge(birthday: String): Int {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+            val birthDate = LocalDate.parse(birthday, formatter)
+            Period.between(birthDate, LocalDate.now()).years
+        } catch (e: Exception) {
+            0
+        }
     }
 }
