@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+enum class SortType {
+    NAME, AGE, BIRTHDAY
+}
+
 class FriendViewModel(
     private val friendsRepository: FriendsRepository
 ) : ViewModel() {
@@ -107,26 +111,43 @@ class FriendViewModel(
         }
     }
 
+    fun filterFriends(nameFragment: String?, age: Int?, userId: String?) {
+        _friendsUIState.update { uiState ->
+            val filteredList = originalFriendList.filter { friend ->
+                val matchesUser = friend.userId == userId
+                val matchesName = nameFragment.isNullOrBlank() || friend.name.contains(nameFragment, ignoreCase = true)
+                val matchesAge = age == null || friend.age == age
+                matchesUser && matchesName && matchesAge
+            }
+            uiState.copy(friends = filteredList)
+        }
+    }
+
     fun filterByName(nameFragment: String, userId: String?) {
-        if (nameFragment.isBlank()) {
-            _friendsUIState.update {
-                it.copy(friends = originalFriendList.filter { friend -> friend.userId == userId })
+        filterFriends(nameFragment, null, userId)
+    }
+
+    fun sortFriends(sortType: SortType, ascending: Boolean = true) {
+        _friendsUIState.update { uiState ->
+            val sortedList = when (sortType) {
+                SortType.NAME -> {
+                    if (ascending) uiState.friends.sortedBy { it.name }
+                    else uiState.friends.sortedByDescending { it.name }
+                }
+                SortType.AGE -> {
+                    if (ascending) uiState.friends.sortedBy { it.age ?: 0 }
+                    else uiState.friends.sortedByDescending { it.age ?: 0 }
+                }
+                SortType.BIRTHDAY -> {
+                    if (ascending) uiState.friends.sortedWith(compareBy({ it.birthMonth ?: 0 }, { it.birthDayOfMonth ?: 0 }))
+                    else uiState.friends.sortedWith(compareByDescending<Friend> { it.birthMonth ?: 0 }.thenByDescending { it.birthDayOfMonth ?: 0 })
+                }
             }
-        } else {
-            _friendsUIState.update {
-                it.copy(
-                    friends = originalFriendList.filter { friend -> 
-                        friend.userId == userId && friend.name.contains(nameFragment, ignoreCase = true) 
-                    }
-                )
-            }
+            uiState.copy(friends = sortedList)
         }
     }
 
     fun sortByName(ascending: Boolean) {
-        _friendsUIState.update {
-            it.copy(friends = if (ascending) it.friends.sortedBy { friend -> friend.name }
-            else it.friends.sortedByDescending { friend -> friend.name })
-        }
+        sortFriends(SortType.NAME, ascending)
     }
 }
