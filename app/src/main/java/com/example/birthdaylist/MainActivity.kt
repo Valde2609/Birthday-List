@@ -30,71 +30,68 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val authViewModel: AuthenticationViewModel = koinViewModel()
                 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = NavRoutes.Login.route,
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable(NavRoutes.Login.route) {
-                            LoginScreen(
-                                user = authViewModel.user,
-                                message = authViewModel.message,
-                                signIn = { email, password -> authViewModel.signIn(email, password) },
-                                register = { email, password -> authViewModel.register(email, password) },
-                                navigateToNextScreen = {
-                                    navController.navigate(NavRoutes.Home.route) {
-                                        popUpTo(NavRoutes.Login.route) { inclusive = true }
-                                    }
+                NavHost(
+                    navController = navController,
+                    startDestination = NavRoutes.Login.route
+                ) {
+                    composable(NavRoutes.Login.route) {
+                        LoginScreen(
+                            user = authViewModel.user,
+                            message = authViewModel.message,
+                            signIn = { email, password -> authViewModel.signIn(email, password) },
+                            register = { email, password -> authViewModel.register(email, password) },
+                            navigateToNextScreen = {
+                                navController.navigate(NavRoutes.Home.route) {
+                                    popUpTo(NavRoutes.Login.route) { inclusive = true }
                                 }
-                            )
-                        }
+                            }
+                        )
+                    }
 
-                        composable(NavRoutes.Home.route) {
-                            HomeScreen(
-                                onLogoutClick = {
-                                    authViewModel.signOut()
-                                    navController.navigate(NavRoutes.Login.route) {
-                                        popUpTo(NavRoutes.Home.route) { inclusive = true }
-                                    }
-                                },
-                                onAddFriendClick = {
-                                    navController.navigate(NavRoutes.AddFriend.route)
-                                },
-                                onEditFriendClick = { friend ->
-                                    navController.navigate("${NavRoutes.EditFriend.route}/${friend.id}")
+                    composable(NavRoutes.Home.route) {
+                        HomeScreen(
+                            onLogoutClick = {
+                                authViewModel.signOut()
+                                navController.navigate(NavRoutes.Login.route) {
+                                    popUpTo(NavRoutes.Home.route) { inclusive = true }
                                 }
-                            )
-                        }
+                            },
+                            onAddFriendClick = {
+                                navController.navigate(NavRoutes.AddFriend.route)
+                            },
+                            onEditFriendClick = { friend ->
+                                navController.navigate("${NavRoutes.EditFriend.route}/${friend.id}")
+                            }
+                        )
+                    }
 
-                        composable(NavRoutes.AddFriend.route) {
-                            AddFriendScreen(
-                                onNavigateBack = { navController.popBackStack() },
-                                onLogoutClick = {
-                                    authViewModel.signOut()
-                                    navController.navigate(NavRoutes.Login.route) {
-                                        popUpTo(0)
-                                    }
+                    composable(NavRoutes.AddFriend.route) {
+                        AddFriendScreen(
+                            onNavigateBack = { navController.popBackStack() },
+                            onLogoutClick = {
+                                authViewModel.signOut()
+                                navController.navigate(NavRoutes.Login.route) {
+                                    popUpTo(0)
                                 }
-                            )
-                        }
+                            }
+                        )
+                    }
 
-                        composable(
-                            route = "${NavRoutes.EditFriend.route}/{friendId}",
-                            arguments = listOf(navArgument("friendId") { type = NavType.IntType })
-                        ) { backStackEntry ->
-                            val friendId = backStackEntry.arguments?.getInt("friendId") ?: -1
-                            EditFriendScreen(
-                                friendId = friendId,
-                                onNavigateBack = { navController.popBackStack() },
-                                onLogoutClick = {
-                                    authViewModel.signOut()
-                                    navController.navigate(NavRoutes.Login.route) {
-                                        popUpTo(0)
-                                    }
+                    composable(
+                        route = "${NavRoutes.EditFriend.route}/{friendId}",
+                        arguments = listOf(navArgument("friendId") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val friendId = backStackEntry.arguments?.getInt("friendId") ?: -1
+                        EditFriendScreen(
+                            friendId = friendId,
+                            onNavigateBack = { navController.popBackStack() },
+                            onLogoutClick = {
+                                authViewModel.signOut()
+                                navController.navigate(NavRoutes.Login.route) {
+                                    popUpTo(0)
                                 }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }
