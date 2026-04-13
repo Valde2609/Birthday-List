@@ -65,6 +65,14 @@ fun EditFriendScreen(
     val uiState by viewModel.friendsUIState.collectAsState()
     val friend = uiState.friends.find { it.id == friendId }
 
+    // Fetch friends if the list is empty (e.g., direct navigation or separate ViewModel instance)
+    LaunchedEffect(userId) {
+        if (uiState.friends.isEmpty()) {
+            viewModel.getFriends(userId)
+        }
+    }
+
+    // Populate fields when the friend data is loaded
     LaunchedEffect(friend) {
         friend?.let {
             name = it.name
@@ -107,7 +115,7 @@ fun EditFriendScreen(
             )
         }
     ) { innerPadding ->
-        if (uiState.isLoading) {
+        if (uiState.isLoading && friend == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
@@ -167,21 +175,25 @@ fun EditFriendScreen(
                     Button(
                         onClick = {
                             if (name.isNotBlank() && birthday.isNotBlank() && friend != null) {
-                                val date = formatter.parse(birthday)
-                                val cal = Calendar.getInstance()
-                                if (date != null) {
-                                    cal.time = date
-                                    viewModel.updateFriend(
-                                        friend.id,
-                                        friend.copy(
-                                            name = name,
-                                            birthDayOfMonth = cal.get(Calendar.DAY_OF_MONTH),
-                                            birthMonth = cal.get(Calendar.MONTH) + 1,
-                                            birthYear = cal.get(Calendar.YEAR)
-                                        ),
-                                        userId = userId
-                                    )
-                                    onNavigateBack()
+                                try {
+                                    val date = formatter.parse(birthday)
+                                    val cal = Calendar.getInstance()
+                                    if (date != null) {
+                                        cal.time = date
+                                        viewModel.updateFriend(
+                                            friend.id,
+                                            friend.copy(
+                                                name = name,
+                                                birthDayOfMonth = cal.get(Calendar.DAY_OF_MONTH),
+                                                birthMonth = cal.get(Calendar.MONTH) + 1,
+                                                birthYear = cal.get(Calendar.YEAR)
+                                            ),
+                                            userId = userId
+                                        )
+                                        onNavigateBack()
+                                    }
+                                } catch (e: Exception) {
+                                    // Handle parse error if necessary
                                 }
                             }
                         },
