@@ -40,10 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.compose.koinViewModel
+import com.example.birthdaylist.FriendsUIState
 import com.example.birthdaylist.components.BirthdayTopAppBar
 import com.example.birthdaylist.data.Friend
+import com.example.birthdaylist.ui.theme.BirthdayListTheme
 import com.example.birthdaylist.viewModel.AuthenticationViewModel
 import com.example.birthdaylist.viewModel.FriendViewModel
 import com.example.birthdaylist.viewModel.SortType
@@ -59,19 +62,43 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.friendsUIState.collectAsState()
     val userId = authViewModel.user?.uid
+    
+    LaunchedEffect(userId) {
+        viewModel.getFriends(userId)
+    }
+
+    HomeScreenContent(
+        uiState = uiState,
+        modifier = modifier,
+        onLogoutClick = onLogoutClick,
+        onAddFriendClick = onAddFriendClick,
+        onEditFriendClick = onEditFriendClick,
+        onDeleteFriendClick = { friend -> viewModel.deleteFriend(friend.id, userId) },
+        onSortClick = { sortType -> viewModel.sortFriends(sortType) },
+        onFilterChange = { name, age -> viewModel.filterFriends(name, age, userId) }
+    )
+}
+
+@Composable
+fun HomeScreenContent(
+    uiState: FriendsUIState,
+    modifier: Modifier = Modifier,
+    onLogoutClick: () -> Unit = {},
+    onAddFriendClick: () -> Unit = {},
+    onEditFriendClick: (Friend) -> Unit = {},
+    onDeleteFriendClick: (Friend) -> Unit = {},
+    onSortClick: (SortType) -> Unit = {},
+    onFilterChange: (String?, Int?) -> Unit = { _, _ -> }
+) {
     var showSortMenu by remember { mutableStateOf(false) }
     var showFilterBar by remember { mutableStateOf(false) }
     
     var nameFilter by remember { mutableStateOf("") }
     var ageFilter by remember { mutableStateOf("") }
 
-    LaunchedEffect(userId) {
-        viewModel.getFriends(userId)
-    }
-
-    LaunchedEffect(nameFilter, ageFilter, userId) {
+    LaunchedEffect(nameFilter, ageFilter) {
         val age = ageFilter.toIntOrNull()
-        viewModel.filterFriends(nameFilter, age, userId)
+        onFilterChange(nameFilter, age)
     }
 
     Scaffold(
@@ -116,21 +143,21 @@ fun HomeScreen(
                         DropdownMenuItem(
                             text = { Text("Sort by Name") },
                             onClick = {
-                                viewModel.sortFriends(SortType.NAME)
+                                onSortClick(SortType.NAME)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text("Sort by Age") },
                             onClick = {
-                                viewModel.sortFriends(SortType.AGE)
+                                onSortClick(SortType.AGE)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
                             text = { Text("Sort by Birthday") },
                             onClick = {
-                                viewModel.sortFriends(SortType.BIRTHDAY)
+                                onSortClick(SortType.BIRTHDAY)
                                 showSortMenu = false
                             }
                         )
@@ -168,7 +195,7 @@ fun HomeScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 } else if (uiState.error != null) {
                     Text(
-                        text = uiState.error ?: "Unknown error",
+                        text = uiState.error,
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -180,7 +207,7 @@ fun HomeScreen(
                         items(uiState.friends) { friend ->
                             FriendList(
                                 friend = friend,
-                                onDeleteClick = { viewModel.deleteFriend(friend.id, userId) },
+                                onDeleteClick = { onDeleteFriendClick(friend) },
                                 onEditClick = { onEditFriendClick(friend) }
                             )
                         }
@@ -237,5 +264,20 @@ fun FriendList(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    BirthdayListTheme {
+        HomeScreenContent(
+            uiState = FriendsUIState(
+                friends = listOf(
+                    Friend(id = 1, name = "Alice", age = 25, birthDayOfMonth = 1, birthMonth = 1, birthYear = 1999),
+                    Friend(id = 2, name = "Bob", age = 30, birthDayOfMonth = 2, birthMonth = 2, birthYear = 1994)
+                )
+            )
+        )
     }
 }
