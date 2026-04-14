@@ -1,12 +1,14 @@
 package com.example.birthdaylist
 
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import com.example.birthdaylist.screens.HomeScreen
+import com.example.birthdaylist.ui.theme.BirthdayListTheme
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,10 +17,19 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
     @Test
-    fun useAppContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.birthdaylist", appContext.packageName)
+    fun addButtonIsDisplayed() {
+        composeTestRule.setContent {
+            BirthdayListTheme {
+                HomeScreen()
+            }
+        }
+
+        // Check if the FloatingActionButton with content description "Add Friend" exists and is displayed
+        composeTestRule.onNodeWithContentDescription("Add Friend").assertIsDisplayed()
     }
 }
